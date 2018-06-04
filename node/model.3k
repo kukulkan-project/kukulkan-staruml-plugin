@@ -1,0 +1,117 @@
+
+entity Artículo de Revista Científica, Tecnológica o de Innovación { 
+}
+
+entity Citas e Información Bibliográfica { 
+        OneToOne  : Artículo de Revista Científica, Tecnológica o de Innovación
+}
+
+entity Recurso de Información Educativa, Académica, Científica, Tecnológica y de Innovación { 
+        Versión digital final aceptada para publicar (con o sin edición)  : ,
+        Cumple con el proceso de aprobación : ,
+        Via de Ingreso : [object Object],
+        A texto completo : ,
+        En formato digital : ,
+        OneToOne (información contenida)  : Repositorio
+}
+
+entity Producto Educativo { 
+}
+
+entity Producto Académico { 
+}
+
+entity Recursos Públicos { 
+}
+
+entity Recurso de Información Educativa, Académica, Científica, Tecnológica y de Innovación Nacional { 
+}
+
+entity Recurso de Información Educativa, Académica, Científica, Tecnológica y de Innovación Internacional  { 
+}
+
+entity Infraestructura Pública { 
+}
+
+entity Información Confidencial o Reservada { 
+}
+
+entity Tesis { 
+}
+
+entity Disertación { 
+}
+
+entity Protocolo de Investigación { 
+}
+
+entity Memorias de congreso { 
+}
+
+entity Patente { 
+}
+
+entity Otro Recurso de Información Educativa, Académica, Científica, Tecnológica y de Innovación { 
+}
+
+entity Metadatos { 
+}
+
+entity Publicación Científica { 
+}
+
+entity Libro { 
+}
+
+entity Capítulo de Libro { 
+        ManyToOne  : Libro
+}
+
+entity Tesis de Posgrado { 
+}
+
+entity Documento Presentado en Conferencia / Congreso { 
+        ManyToOne  : Memorias de congreso
+}
+
+entity Tesis de Maestría { 
+}
+
+entity Tesis de Doctorado { 
+}
+
+entity Producto del Desarrollo Tecnológico y la Innovación { 
+}
+
+entity Desarrollo Tecnológico { 
+}
+
+entity Innovación { 
+}
+
+entity Transferencia Tecnológica { 
+}
+
+entity Prototipo { 
+}
+
+entity Producto { 
+        OneToOne persona : Persona
+}
+
+entity Proceso { 
+}
+
+entity Servicio { 
+}
+
+entity Diagnóstico Tecnológico { 
+}
+
+entity Datos de la Investigación { 
+}
+
+entity Persona { 
+        nombre : String required,
+        apellido : String,
+}

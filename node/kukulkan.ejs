@@ -1,0 +1,6 @@
+<% element.forEach(function(entity) { %>
+entity <%= entity.name %> { <% entity.properties.forEach(function(attr) { %>
+        <%=attr.name%> : <%=attr.type%><%if (attr.required){%> required<%}%>,<% }); entity.relationships.forEach(function(rel, index2, array2) { %>
+        <%=rel.type%> <%if (rel.attributeNameInTarget){%>(<%= rel.attributeNameInTarget%>) <%}%><%=rel.attributeName%> : <%=rel.targetEntity%><%if (rel.required){%> required<%}%><%if (index2 < array2.length - 1){%>,<%}%><% }); %>
+}
+<% }); %>

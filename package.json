@@ -1,0 +1,27 @@
+{
+  "name": "infotec.kukulkanplugin",
+  "version": "1.0.0",
+  "description": "The StarUML plugin for mdj-to-kukulkan converter",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/robertovillarejo/mdj-to-kukulkan-staruml-plugin.git"
+  },
+  "keywords": [
+    "staruml",
+    "plugin",
+    "kukulkan"
+  ],
+  "author": "Roberto Villarejo Martínez",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/robertovillarejo/mdj-to-kukulkan-staruml-plugin/issues"
+  },
+  "homepage": "https://github.com/robertovillarejo/mdj-to-kukulkan-staruml-plugin#readme",
+  "engines": {
+    "staruml": "^3.0.0"
+  }
+}
