@@ -5,32 +5,40 @@ define(function (require, exports, module) {
         CommandManager = app.getModule("command/CommandManager"),
         MenuManager = app.getModule("menu/MenuManager"),
         ProjectManager = app.getModule("engine/ProjectManager"),
-        Repository = app.getModule("core/Repository"),
         ExtensionUtils = app.getModule("utils/ExtensionUtils"),
-        NodeDomain = app.getModule("utils/NodeDomain");
+        NodeDomain = app.getModule("utils/NodeDomain"),
+        FileSystem = app.getModule("filesystem/FileSystem"),
+        Toast = app.getModule('ui/Toast');
 
     var kukulkanDomain = new NodeDomain("kukulkan", ExtensionUtils.getModulePath(module, "node/KukulkanDomain"));
 
-    function handleHelloWorld() {
-        var filename = ProjectManager.getFilename();
-        var parentFolder = filename.substring(0, filename.lastIndexOf('/'));
-        kukulkanDomain.exec("toKukulkanFile", filename, parentFolder + "/model.3k")
-            .done(function () {
-                console.log("Listo!!!");
+    function toKukulkanFile() {
+        var projectFile = ProjectManager.getFilename();
+        var parentFolder = projectFile.substring(0, projectFile.lastIndexOf('/'));
+        FileSystem.showSaveDialog("Save Kukulkan file as...", parentFolder, "Model.3k", function (err, filename) {
+            if (!err) {
+                if (filename) {
+                    kukulkanDomain.exec("toKukulkanFile", projectFile, filename)
+                        .done(function () {
+                            Toast.info("Kukulkan file saved on " + filename);
+                        }
+                        )
+                        .fail(function (err) {
+                            Toast.error("Error while generating kukulkan file");
+                        }
+                        );
+                }
             }
-            )
-            .fail(function (err) {
-                console.log(err)
-            }
-            );
+        });
+
     }
 
-    // Add a HelloWorld command
-    var CMD_HELLOWORLD = "tools.helloworld";
-    CommandManager.register("Hello World", CMD_HELLOWORLD, handleHelloWorld);
+    //Register command
+    var CMD_TOKUKULKANFILE = "tools.tokukulkanfile";
+    CommandManager.register("Export as Kukulkan File", CMD_TOKUKULKANFILE, toKukulkanFile);
 
-    // Add HellWorld menu item (Tools > Hello World)
+    //Add item to menu
     var menu = MenuManager.getMenu(Commands.TOOLS);
-    menu.addMenuItem(CMD_HELLOWORLD);
+    menu.addMenuItem(CMD_TOKUKULKANFILE);
 
 });

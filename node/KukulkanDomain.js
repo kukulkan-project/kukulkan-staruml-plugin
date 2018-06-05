@@ -175,10 +175,8 @@
 
         //Transform UMLClass(es) to intermediate model
         var model = toModel(businessEntities);
-        console.log(model);
         //Render as Kukulkan Grammar
         mdjson.render(template, outputFile, model);
-        return true;
     }
 
     function init(domainManager) {

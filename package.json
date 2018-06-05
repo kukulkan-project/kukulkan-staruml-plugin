@@ -1,6 +1,6 @@
 {
   "name": "infotec.kukulkanplugin",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "The StarUML plugin for mdj-to-kukulkan converter",
   "main": "main.js",
   "scripts": {

@@ -1,6 +1,0 @@
-<% element.forEach(entity => { %>
-entity <%= entity.name %> { <% entity.properties.forEach(attr => { %>
-        <%=attr.name%> : <%=attr.type%><%if (attr.required){%> required<%}%>,<% }); entity.relationships.forEach((rel, index2, array2) => { %>
-        <%=rel.type%> <%if (rel.attributeNameInTarget){%>(<%= rel.attributeNameInTarget%>) <%}%><%=rel.attributeName%> : <%=rel.targetEntity%><%if (rel.required){%> required<%}%><%if (index2 < array2.length - 1){%>,<%}%><% }); %>
-}
-<% }); %>
