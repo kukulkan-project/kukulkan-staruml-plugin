@@ -22,6 +22,6 @@
   },
   "homepage": "https://github.com/robertovillarejo/mdj-to-kukulkan-staruml-plugin#readme",
   "engines": {
-    "staruml": ">=2.0.0"
+    "staruml": "^2.0.0"
   }
 }
