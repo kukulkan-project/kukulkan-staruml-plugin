@@ -8,7 +8,8 @@ define(function (require, exports, module) {
         ExtensionUtils = app.getModule("utils/ExtensionUtils"),
         NodeDomain = app.getModule("utils/NodeDomain"),
         FileSystem = app.getModule("filesystem/FileSystem"),
-        Toast = app.getModule('ui/Toast');
+        Toast = app.getModule('ui/Toast'),
+        Dialogs = app.getModule('dialogs/Dialogs');
 
     var kukulkanDomain = new NodeDomain("kukulkan", ExtensionUtils.getModulePath(module, "node/KukulkanDomain"));
 
@@ -20,11 +21,10 @@ define(function (require, exports, module) {
                 if (filename) {
                     kukulkanDomain.exec("toKukulkanFile", projectFile, filename)
                         .done(function (p) {
-                            console.log("Result " + p);
                             if (p === true) {
                                 Toast.info("Kukulkan file saved on " + filename);
                             } else {
-                                Toast.error(p);
+                                Dialogs.showErrorDialog(p);
                             }
 
                         }

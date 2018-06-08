@@ -25,7 +25,6 @@
     }
 
     function toModel(entities) {
-        console.log("ToModel");
         model = entities.map(function (e) {
             return toEntity(e)
         });
@@ -36,7 +35,6 @@
     };
 
     function toEntity(umlClass) {
-        console.log("ToEntity");
         var entity;
 
         entity = {
@@ -52,7 +50,6 @@
 
         //Relationships
         var umlAssociations = umlClass.getChildren().filter(function (e) { return e instanceof type.UMLAssociation });
-        console.log(umlAssociations);
         umlAssociations.forEach(function (a) {
             determineNavigability(a);
         });
@@ -61,7 +58,6 @@
     };
 
     function toAttribute(umlAttribute) {
-        console.log("ToAttribute");
         var attribute = {
             name: umlAttribute.name,
             type: umlAttribute.type,
@@ -75,7 +71,6 @@
     };
 
     function toRelationship(umlAssociation) {
-        console.log("ToRealtion");
         var relationship = {
             attributeName: null,
             sourceEntity: null,
@@ -118,7 +113,6 @@
     };
 
     function determineNavigability(umlAssociation) {
-        console.log("Determine navigability");
         var relationship = toRelationship(umlAssociation);
 
         var end1 = umlAssociation.end1;
