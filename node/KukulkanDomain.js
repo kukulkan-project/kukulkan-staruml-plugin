@@ -3,36 +3,79 @@
 
     var mdjson = require('metadata-json');
 
+    var constants = {
+        zeroOrOne: "0..1",
+        one: "1",
+        zeroOrMany: "0..*",
+        oneOrMany: "1..*",
+        many: "*",
+        OneToOne: "OneToOne",
+        OneToMany: "OneToMany",
+        ManyToOne: "ManyToOne",
+        ManyToMany: "ManyToMany",
+    }
+
+
+    var model;
+    var diagnostics = [];
     var entityHolder = {};
 
-    //UML Multiplicities
-    var zeroOrOne = "0..1";
-    var one = "1";
-    var zeroOrMany = "0..*";
-    var oneOrMany = "1..*";
-    var many = "*";
+    function addDiagnostic(diagnostic) {
+        diagnostics.push(diagnostic);
+    }
 
-    //Relationships types
-    var OneToOne = "OneToOne";
-    var OneToMany = "OneToMany";
-    var ManyToOne = "ManyToOne";
-    var ManyToMany = "ManyToMany";
+    function toModel(entities) {
+        console.log("ToModel");
+        model = entities.map(function (e) {
+            return toEntity(e)
+        });
+        return {
+            model: model,
+            diagnostics: diagnostics
+        };
+    };
+
+    function toEntity(umlClass) {
+        console.log("ToEntity");
+        var entity;
+
+        entity = {
+            name: umlClass.name,
+            properties: [],
+            relationships: []
+        };
+
+        entityHolder[entity.name] = entity; //Add to entityHolder
+
+        //Map properties
+        entity.properties = umlClass.attributes.map(function (p) { return toAttribute(p) });
+
+        //Relationships
+        var umlAssociations = umlClass.getChildren().filter(function (e) { return e instanceof type.UMLAssociation });
+        console.log(umlAssociations);
+        umlAssociations.forEach(function (a) {
+            determineNavigability(a);
+        });
+
+        return entity;
+    };
 
     function toAttribute(umlAttribute) {
+        console.log("ToAttribute");
         var attribute = {
             name: umlAttribute.name,
             type: umlAttribute.type,
             required: false
         };
 
-        if (umlAttribute.multiplicity === one) {
+        if (umlAttribute.multiplicity === constants.one) {
             attribute.required = true;
         }
         return attribute;
-    }
+    };
 
     function toRelationship(umlAssociation) {
-
+        console.log("ToRealtion");
         var relationship = {
             attributeName: null,
             sourceEntity: null,
@@ -46,36 +89,36 @@
         var end2Multiplicity = umlAssociation.end2.multiplicity;
 
         //Determine left side multiplicity
-        if (!end1Multiplicity || end1Multiplicity === zeroOrOne || end1Multiplicity === one) {  //Then left side is 'One'
+        if (!end1Multiplicity || end1Multiplicity === constants.zeroOrOne || end1Multiplicity === constants.one) {  //Then left side is 'One'
             //Determine right side multiplicity
-            if (!end2Multiplicity || end2Multiplicity === zeroOrOne || end2Multiplicity === one) {  //Then right side is 'One'
-                relationship.type = OneToOne;
-            } else if (end2Multiplicity === zeroOrMany || end2Multiplicity === oneOrMany || end2Multiplicity === many) {    //Then right side is 'Many'
-                relationship.type = OneToMany
+            if (!end2Multiplicity || end2Multiplicity === constants.zeroOrOne || end2Multiplicity === constants.one) {  //Then right side is 'One'
+                relationship.type = constants.OneToOne;
+            } else if (end2Multiplicity === constants.zeroOrMany || end2Multiplicity === constants.oneOrMany || end2Multiplicity === constants.many) {    //Then right side is 'Many'
+                relationship.type = constants.OneToMany
             } else {
-                throw new Error("Unknown multiplicity: " + end2Multiplicity + " in UML Association: " + umlAssociation);
+                addDiagnostic("Unknown multiplicity: " + end2Multiplicity + " in UML Association: " + umlAssociation);
             }
-        } else if (end1Multiplicity === zeroOrMany || end1Multiplicity === oneOrMany || end1Multiplicity === many) {    //Then right side is 'Many'
+        } else if (end1Multiplicity === constants.zeroOrMany || end1Multiplicity === constants.oneOrMany || end1Multiplicity === constants.many) {    //Then right side is 'Many'
             //Determine right side multiplicity
             if (!end2Multiplicity || end2Multiplicity === zeroOrOne || end2Multiplicity === one) {  //Then right side is 'One'
-                relationship.type = ManyToOne;
-            } else if (end2Multiplicity === zeroOrMany || end2Multiplicity === oneOrMany || end2Multiplicity === many) { //Then right side is 'Many'
-                relationship.type = ManyToMany;
+                relationship.type = constants.ManyToOne;
+            } else if (end2Multiplicity === constants.zeroOrMany || end2Multiplicity === constants.oneOrMany || end2Multiplicity === constants.many) { //Then right side is 'Many'
+                relationship.type = constants.ManyToMany;
             } else {
-                throw new Error("Unknown multiplicity: " + end2Multiplicity + " in UML Association: " + umlAssociation);
+                addDiagnostic("Unknown multiplicity: " + end2Multiplicity + " in UML Association: " + umlAssociation);
             }
         }
 
         //Determine required validator
-        if (end2Multiplicity === one || end2Multiplicity === oneOrMany) {
+        if (end2Multiplicity === constants.one || end2Multiplicity === constants.oneOrMany) {
             relationship.required = true;
         }
 
         return relationship;
-    }
+    };
 
     function determineNavigability(umlAssociation) {
-
+        console.log("Determine navigability");
         var relationship = toRelationship(umlAssociation);
 
         var end1 = umlAssociation.end1;
@@ -106,55 +149,13 @@
                 ownerEntity.relationships.push(relationship);
             }
         } else if (!end1.navigable && !end2.navigable) { //None entity is navigable
-            throw new Error("There is no navigability in relationship between Entity " + end1.reference.name + " and Entity " + end2.reference.name);
+            addDiagnostic("There is no navigability in relationship between Entity " + end1.reference.name + " and Entity " + end2.reference.name);
         }
-    }
-
-    function toEntity(umlClass) {
-        var entity;
-
-        entity = {
-            name: umlClass.name,
-            properties: [],
-            relationships: []
-        };
-
-        entityHolder[entity.name] = entity; //Add to entityHolder
-
-        //Map properties
-        entity.properties = umlClass.attributes.map(function (p) {
-            return toAttribute(p);
-        });
-        //entity.properties = umlClass.attributes.map(p => toAttribute(p));
-
-        //Relationships
-        //var umlAssociations = umlClass.getChildren().filter(e => e instanceof type.UMLAssociation);
-        var umlAssociations = umlClass.getChildren().filter(function (e) {
-            if (e instanceof type.UMLAssociation) {
-                return true
-            }
-            return false;
-        });
-        /*umlAssociations.forEach(a => {
-            determineNavigability(a);
-        });*/
-        umlAssociations.forEach(function (a) {
-            determineNavigability(a);
-        });
-        return entity;
-    }
-
-    function toModel(entities) {
-        //var model = entities.map(e => toEntity(e));
-        var model = entities.map(function (e) {
-            return toEntity(e);
-        });
-        return model;
     };
 
     function toKukulkanFile(path, outputFile) {
-        var template = __dirname + "/kukulkan.ejs";
-        var outputFile = outputFile;
+        var template = template || __dirname + "/kukulkan.ejs";
+        var outputFile = outputFile || __dirname + "/model.3k";
 
         //Load mdj
         mdjson.loadFromFile(path);
@@ -173,10 +174,13 @@
             return false;
         });
 
-        //Transform UMLClass(es) to intermediate model
-        var model = toModel(businessEntities);
-        //Render as Kukulkan Grammar
-        mdjson.render(template, outputFile, model);
+        var result = toModel(businessEntities);
+        if (result.diagnostics.length == 0) {
+            mdjson.render(template, outputFile, result.model);
+            return true;
+        } else {
+            return result.diagnostics;
+        }
     }
 
     function init(domainManager) {
