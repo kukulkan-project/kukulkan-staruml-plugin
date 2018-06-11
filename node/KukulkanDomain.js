@@ -13,6 +13,7 @@
         OneToMany: "OneToMany",
         ManyToOne: "ManyToOne",
         ManyToMany: "ManyToMany",
+        types: ["String", "Integer", "Long", "BigDecimal", "Float", "Double", "Boolean", "LocalDate", "ZonedDateTime", "Blob", "AnyBlob", "ImageBlob", "TextBlob", "Instant"]
     }
 
 
@@ -25,6 +26,7 @@
     }
 
     function toModel(entities) {
+        diagnostics = [];
         model = entities.map(function (e) {
             return toEntity(e)
         });
@@ -58,6 +60,28 @@
     };
 
     function toAttribute(umlAttribute) {
+        //Check attribute has a data type defined
+        if (!umlAttribute.type) {
+            addDiagnostic("No type defined for attribute " + umlAttribute.name + " in entity " + umlAttribute._parent.name);
+        } else {
+            //Check supported data types
+            var supported = false;
+            constants.types.forEach(function (type) {
+                if (type === umlAttribute.type) {
+                    supported = true;
+                }
+            });
+            if (!supported) {
+                addDiagnostic("Not supported type " + umlAttribute.type + " for attribute " + umlAttribute.name + " in entity " + umlAttribute._parent.name);
+            }
+            //Check valid multiplicity
+            if (umlAttribute.multiplicity) {
+                if (umlAttribute.multiplicity !== constants.zeroOrOne || umlAttribute.multiplicity !== constants.one) {
+                    addDiagnostic("Unsupported multiplicity " + umlAttribute.multiplicity + " in attribute " + umlAttribute.name + " in entity " + umlAttribute._parent.name);
+                }
+            }
+        }
+
         var attribute = {
             name: umlAttribute.name,
             type: umlAttribute.type,
@@ -117,6 +141,15 @@
 
         var end1 = umlAssociation.end1;
         var end2 = umlAssociation.end2;
+
+
+        //Validate named navigable relationship
+        if (end1.navigable && !end2.name) {
+            addDiagnostic("Missing name for end 2 in relationship between entity " + end1.reference.name + " and entity " + end2.reference.name);
+        }
+        if (end2.navigable && !end1.name) {
+            addDiagnostic("Missing name for end 1 in relationship between entity " + end1.reference.name + " and entity " + end2.reference.name);
+        }
 
         relationship.sourceEntity = end1.reference.name;
         relationship.targetEntity = end2.reference.name;
