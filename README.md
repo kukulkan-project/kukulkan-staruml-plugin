@@ -2,14 +2,14 @@
 The StarUML plugin for generate a Kukulkan file from classes in mdj file.
 
 ## Validations
-[x] Attribute type is not null 
-[x] Attribute type is one of Kukulkan types
-[x] Attribute multiplicity is one of these: blank, **0..1**, **1**
-[x] Multiplicity in relationships is one of these: **0..1**, **1**, __0..*__, __1..*__, __*__
-[x] None relationship has both ends defined as no navigable
-[x] When an end of a UMLAssociation is navigable, then opposite end has a name. (Ensures the name of the attribute in relationship declarations like **OneToOne**, **OneToMany**, **ManyToOne**, **ManyToMany** in Kukulkan file). 
-[] Entity name should be in pascal case
-[] Attribute name should be in camel case
+- [x] Attribute type is not null  
+- [x] Attribute type is one of Kukulkan types
+- [x] Attribute multiplicity is one of these: blank, **0..1**, **1**
+- [x] Multiplicity in relationships is one of these: **0..1**, **1**, __0..*__, __1..*__, __*__
+- [x] None relationship has both ends defined as no navigable
+- [x] When an end of a UMLAssociation is navigable, then opposite end has a name. (Ensures the name of the attribute in relationship declarations like **OneToOne**, **OneToMany**, **ManyToOne**, **ManyToMany** in Kukulkan file). 
+- [ ] Entity name should be in pascal case
+- [ ] Attribute name should be in camel case
 
 ## Rules
 
