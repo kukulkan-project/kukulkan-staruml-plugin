@@ -39,7 +39,7 @@ The StarUML plugin for generate a Kukulkan file from classes in mdj file.
 | 1.**  | *     | ManyToMany | false    |
 | *     | *     | ManyToMany | false    |
 
-## Determining the owner relationship
+## Determining the relationship owner
 
 | End1 Navigable | End2 Navigable | Direction      | Owner        |
 |----------------|----------------|----------------|--------------|
