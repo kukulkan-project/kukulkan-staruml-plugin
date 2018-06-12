@@ -119,7 +119,7 @@
             }
         } else if (end1Multiplicity === constants.zeroOrMany || end1Multiplicity === constants.oneOrMany || end1Multiplicity === constants.many) {    //Then right side is 'Many'
             //Determine right side multiplicity
-            if (!end2Multiplicity || end2Multiplicity === zeroOrOne || end2Multiplicity === one) {  //Then right side is 'One'
+            if (!end2Multiplicity || end2Multiplicity === constants.zeroOrOne || end2Multiplicity === constants.one) {  //Then right side is 'One'
                 relationship.type = constants.ManyToOne;
             } else if (end2Multiplicity === constants.zeroOrMany || end2Multiplicity === constants.oneOrMany || end2Multiplicity === constants.many) { //Then right side is 'Many'
                 relationship.type = constants.ManyToMany;
@@ -129,9 +129,10 @@
         }
 
         //Determine required validator
+        /*
         if (end2Multiplicity === constants.one || end2Multiplicity === constants.oneOrMany) {
             relationship.required = true;
-        }
+        }*/
 
         return relationship;
     };
@@ -144,12 +145,12 @@
 
 
         //Validate named navigable relationship
-        if (end1.navigable && !end2.name) {
-            addDiagnostic("Missing name for end 2 in relationship between entity " + end1.reference.name + " and entity " + end2.reference.name);
-        }
-        if (end2.navigable && !end1.name) {
+        if (end1.navigable && !end1.name) {
             addDiagnostic("Missing name for end 1 in relationship between entity " + end1.reference.name + " and entity " + end2.reference.name);
         }
+        if (end2.navigable && !end2.name) {
+            addDiagnostic("Missing name for end 2 in relationship between entity " + end1.reference.name + " and entity " + end2.reference.name);
+        }        
 
         relationship.sourceEntity = end1.reference.name;
         relationship.targetEntity = end2.reference.name;
