@@ -4,7 +4,7 @@ The StarUML plugin for generate a Kukulkan file from classes in mdj file.
 ## Install StarUML plugin
 1. Open `Tools>Extension Manager`
 2. Click on 'Install From Url...'
-3. Enter `https://github.com/robertovillarejo/mdj-to-kukulkan-staruml-plugin`
+3. Enter `https://github.com/kukulkan-project/kukulkan-staruml-plugin`
 4. Click on 'Install'
 
 ## Using this plugin
